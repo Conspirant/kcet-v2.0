@@ -1,0 +1,1663 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KCET 2025 Rank Predictor | Elite Edition</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanilla-tilt@1.7.0/dist/vanilla-tilt.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+    <style>
+        :root {
+            --primary: #6d28d9;
+            --secondary: #a78bfa;
+            --accent: #ec4899;
+            --light: #f5f3ff;
+            --dark: #1e1b4b;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --info: #3b82f6;
+            --bg: linear-gradient(135deg, #f5f3ff 0%, #e9d5ff 100%);
+            --text: #1a1a1a;
+            --card-bg: #ffffff;
+            --shadow: 0 8px 24px rgba(0, 0, 0, 0.1), 0 0 16px rgba(109, 40, 217, 0.2);
+            --interactive-border: rgba(255, 255, 255, 0.8);
+        }
+
+        [data-theme="dark"] {
+            --bg: #121212;
+            --text: #f0f0f0;
+            --card-bg: #25233a;
+            --shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+            --interactive-border: rgba(167, 139, 250, 0.6);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--bg);
+            min-height: 100vh;
+            color: var(--text);
+            transition: background 0.5s ease, color 0.5s ease;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        #particles-js {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.6;
+        }
+
+        .container {
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+
+        .glass-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(15px);
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            box-shadow: var(--shadow);
+            padding: 2rem;
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+        }
+
+        .gradient-text {
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-weight: 900;
+        }
+
+        .gradient-bg {
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            transition: background 0.3s ease;
+        }
+
+        .gradient-bg:hover {
+            background: linear-gradient(90deg, var(--accent), var(--primary));
+        }
+
+        .premium-btn {
+            position: relative;
+            overflow: hidden;
+            border: 2px solid var(--interactive-border);
+            transition: all 0.3s ease;
+            animation: pulse-border 2s infinite;
+        }
+
+        .premium-btn:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 6px 20px rgba(109, 40, 217, 0.5);
+            border-color: var(--accent);
+        }
+
+        @keyframes pulse-border {
+            0%, 100% { border-color: var(--interactive-border); }
+            50% { border-color: var(--accent); }
+        }
+
+        .fab {
+            position: fixed;
+            bottom: 2.5rem;
+            right: 2.5rem;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent), var(--primary));
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.75rem;
+            box-shadow: 0 10px 30px rgba(236, 72, 153, 0.5);
+            cursor: pointer;
+            animation: bounce 2.5s infinite;
+            z-index: 1000;
+            border: 2px solid var(--interactive-border);
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-12px); }
+        }
+
+        .tab-content {
+            display: none;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .tab-nav {
+            display: flex;
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            scrollbar-width: none;
+        }
+
+        .tab-nav::-webkit-scrollbar {
+            display: none;
+        }
+
+        .tab-btn {
+            padding: 0.75rem 1.5rem;
+            border: 2px solid var(--interactive-border);
+            background: transparent;
+            color: var(--text);
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.05rem;
+            min-width: 120px;
+            border-radius: 12px;
+            margin-right: 0.5rem;
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            color: #fff;
+            border-color: transparent;
+        }
+
+        .tab-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(109, 40, 217, 0.3);
+        }
+
+        .category-btn {
+            padding: 0.75rem 1.25rem;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            background: var(--card-bg);
+            color: var(--text);
+            border: 2px solid var(--interactive-border);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .category-btn.active {
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            color: #fff;
+            border-color: transparent;
+            box-shadow: 0 4px 15px rgba(109, 40, 217, 0.4);
+        }
+
+        #disclaimer-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(135deg, rgba(30, 27, 75, 0.96), rgba(76, 29, 149, 0.96));
+            backdrop-filter: blur(20px);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+        }
+
+        #disclaimer-content {
+            max-width: 95%;
+            width: 640px;
+            background: var(--card-bg);
+            border-radius: 28px;
+            padding: 2.5rem;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+            text-align: center;
+            max-height: 90vh;
+            overflow-y: auto;
+            font-size: 0.95rem;
+            border: 2px solid var(--interactive-border);
+        }
+
+        .premium-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--accent);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+            100% { transform: scale(1); }
+        }
+
+        .info-btn {
+            font-size: 0.8rem;
+            color: var(--info);
+            cursor: help;
+            margin-left: 0.5rem;
+        }
+
+        .info-btn:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .tooltip-text {
+            visibility: hidden;
+            width: 180px;
+            background: var(--dark);
+            color: #fff;
+            text-align: center;
+            border-radius: 8px;
+            padding: 0.75rem;
+            position: absolute;
+            z-index: 1;
+            bottom: 130%;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.8rem;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .theme-selector {
+            display: flex;
+            gap: 0.75rem;
+            justify-content: center;
+            margin-top: 1.5rem;
+        }
+
+        .theme-option {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid var(--interactive-border);
+            transition: all 0.3s ease;
+        }
+
+        .theme-option:hover {
+            transform: scale(1.15);
+            box-shadow: 0 0 12px var(--accent);
+        }
+
+        .theme-option.active {
+            border-color: var(--accent);
+            box-shadow: 0 0 15px rgba(236, 72, 153, 0.6);
+        }
+
+        .mark-selector {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .mark-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(109, 40, 217, 0.4);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            animation: pulse-circle 3s infinite;
+            border: 2px solid var(--interactive-border);
+        }
+
+        .mark-circle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 25px rgba(109, 40, 217, 0.6);
+        }
+
+        @keyframes pulse-circle {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .mark-value {
+            color: #fff;
+            font-size: 1.75rem;
+            font-weight: 800;
+            text-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        .mark-controls {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 1rem;
+        }
+
+        .mark-btn {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: var(--card-bg);
+            border: 2px solid var(--interactive-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--primary);
+            font-size: 1.2rem;
+        }
+
+        .mark-btn:hover {
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            color: #fff;
+            border-color: var(--accent);
+            box-shadow: 0 4px 12px rgba(109, 40, 217, 0.4);
+        }
+
+        .rank-meter {
+            display: flex;
+            justify-content: center;
+            margin: 2rem 0;
+        }
+
+        .meter-circle {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            background: conic-gradient(var(--primary) 0% var(--progress, 0%), var(--light) var(--progress, 0%) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 25px rgba(109, 40, 217, 0.5);
+            animation: pulse-circle 3s infinite;
+            border: 2px solid var(--interactive-border);
+            position: relative;
+        }
+
+        .meter-circle::before {
+            content: '';
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            bottom: 10px;
+            background: var(--card-bg);
+            border-radius: 50%;
+        }
+
+        .meter-text {
+            color: var(--primary);
+            font-size: 2rem;
+            font-weight: 900;
+            text-shadow: 0 3px 8px rgba(0, 0, 0, 0.4);
+            position: relative;
+            z-index: 1;
+        }
+
+        .meter-circle.animate__pulse {
+            animation: pulse 1.5s ease-in-out;
+        }
+
+        .trend-canvas, .range-canvas, .radar-canvas, .progress-canvas {
+            max-width: 600px;
+            max-height: 300px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            border: 2px solid var(--interactive-border);
+        }
+
+        .breakdown-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            margin-top: 2.5rem;
+        }
+
+        .input-field {
+            background: var(--card-bg);
+            border: 2px solid var(--interactive-border);
+            border-radius: 12px;
+            padding: 0.75rem;
+            color: var(--text);
+            transition: all 0.3s ease;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 10px rgba(109, 40, 217, 0.4);
+        }
+
+        .range-slider {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 10px;
+            border-radius: 5px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            outline: none;
+            opacity: 0.9;
+            border: 2px solid var(--interactive-border);
+        }
+
+        .range-slider:hover {
+            opacity: 1;
+        }
+
+        .range-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--accent);
+            cursor: pointer;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+            border: 2px solid var(--interactive-border);
+        }
+
+        .range-slider::-moz-range-thumb {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--accent);
+            cursor: pointer;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+            border: 2px solid var(--interactive-border);
+        }
+
+        .gradient-result {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: #fff;
+            border-radius: 24px;
+            padding: 2rem;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+        }
+
+        .gradient-result h3,
+        .gradient-result p,
+        .gradient-result span {
+            color: #fff;
+            text-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        .progress-bar {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
+            overflow: hidden;
+            height: 20px;
+            margin-top: 0.5rem;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--success), var(--info));
+            transition: width 1s ease-in-out;
+        }
+
+        @media (max-width: 768px) {
+            .container { padding: 1.5rem 1rem; }
+            .glass-card { padding: 1.5rem; }
+            .mark-circle { width: 100px; height: 100px; }
+            .mark-value { font-size: 1.5rem; }
+            .mark-btn { width: 40px; height: 40px; font-size: 1rem; }
+            .meter-circle { width: 120px; height: 120px; }
+            .meter-text { font-size: 1.75rem; }
+            .trend-canvas, .range-canvas, .radar-canvas, .progress-canvas { max-width: 100%; }
+            .fab { width: 60px; height: 60px; font-size: 1.5rem; bottom: 2rem; right: 2rem; }
+            h1 { font-size: 2.5rem; }
+            h2 { font-size: 1.85rem; }
+            #disclaimer-content { padding: 1.75rem; width: 90%; font-size: 0.9rem; }
+            #disclaimer-content h2 { font-size: 1.75rem; }
+            .premium-btn, .tab-btn, .category-btn, .input-field, .range-slider { border-width: 1px; }
+            .theme-option { width: 28px; height: 28px; }
+            .tab-btn { font-size: 0.95rem; padding: 0.5rem 1rem; min-width: 100px; }
+        }
+
+        @media (max-width: 480px) {
+            h1 { font-size: 2rem; }
+            h2 { font-size: 1.5rem; }
+            .mark-circle { width: 80px; height: 80px; }
+            .mark-value { font-size: 1.25rem; }
+            .mark-btn { width: 36px; height: 36px; font-size: 0.9rem; }
+            .meter-circle { width: 100px; height: 100px; }
+            .meter-text { font-size: 1.5rem; }
+            .tab-btn { font-size: 0.85rem; padding: 0.5rem 0.75rem; min-width: 80px; }
+            #disclaimer-content { padding: 1.25rem; font-size: 0.85rem; }
+            #disclaimer-content h2 { font-size: 1.5rem; }
+            .fab { width: 50px; height: 50px; font-size: 1.25rem; }
+            .theme-option { width: 24px; height: 24px; }
+        }
+    
+        /* Ensure disclaimer text is visible in both themes */
+        #disclaimer-content, 
+        #disclaimer-content p, 
+        #disclaimer-content span, 
+        #disclaimer-content h2, 
+        #disclaimer-content .tooltip-text {
+            color: var(--text) !important;
+        }
+        #disclaimer-content .text-gray-700 { color: var(--text) !important; }
+        #disclaimer-content .text-gray-500 { color: var(--text) !important; }
+
+    </style>
+</head>
+<body>
+    <div id="particles-js"></div>
+
+    <div id="disclaimer-overlay" class="animate__animated animate__fadeIn">
+        <div id="disclaimer-content" class="animate__animated animate__zoomIn">
+            <i class="fas fa-shield-alt premium-icon"></i>
+            <h2 class="text-2xl font-bold mb-6 gradient-text">Important Disclaimer</h2>
+            <div class="space-y-6 text-gray-700 leading-loose">
+                <p class="flex items-start"><i class="fas fa-info-circle mr-2 mt-1 text-blue-500"></i><span><strong>Estimate Only:</strong> This tool provides rank predictions based on historical KCET data (2023–2025, ~3.12 lakh candidates). It is not an official KEA result.</span></p>
+                <p class="flex items-start"><i class="fas fa-exclamation-triangle mr-2 mt-1 text-yellow-500"></i><span><strong>Accuracy Limitations:</strong> Predictions may vary due to score normalization, exam difficulty, or KEA policy changes.</span></p>
+                <p class="flex items-start"><i class="fas fa-ban mr-2 mt-1 text-red-500"></i><span><strong>Eligibility Restrictions:</strong> Per KEA 2024 rules, IIT/NIT students via JEE are barred from CET counseling.</span></p>
+                <p class="flex items-start"><i class="fas fa-link mr-2 mt-1 text-blue-500"></i><span><strong>Official Source:</strong> Verify results at the official KEA website.</span></p>
+                <p class="flex items-start"><i class="fas fa-lock mr-2 mt-1 text-green-500"></i><span><strong>Data Privacy:</strong> All inputs are processed locally. No data is stored or shared.</span></p>
+                <p class="flex items-start"><i class="fas fa-hand-paper mr-2 mt-1 text-red-500"></i><span><strong>No Liability:</strong> Not affiliated with KEA or NTA. No responsibility for errors or decisions based on predictions.</span></p>
+                <p class="flex items-start"><i class="fas fa-users mr-2 mt-1 text-purple-500"></i><span><strong>Category Usage:</strong> Category selection impacts college cutoffs, not ranks.</span></p>
+                <p class="flex items-start"><i class="fas fa-clock mr-2 mt-1 text-orange-500"></i><span><strong>Usage Limits:</strong> This tool is for personal use only and should not be redistributed or used commercially.</span></p>
+                <p class="flex items-start"><i class="fas fa-graduation-cap mr-2 mt-1 text-teal-500"></i><span><strong>Educational Purpose:</strong> Intended to assist students in planning; consult official sources for final decisions.</span></p>
+                <p class="text-xs italic text-gray-600 mt-4">Wait for the timer to unlock...</p>
+            </div>
+            <div class="mt-6 text-center">
+                <p class="text-sm font-semibold text-gray-800" id="disclaimer-timer">Unlock in 10s...</p>
+                <button id="unlock-btn" class="mt-4 w-full gradient-bg text-white py-2.5 px-5 rounded-xl text-base font-semibold premium-btn disabled:opacity-50" disabled>
+                    <i class="fas fa-unlock-alt mr-2"></i> Unlock Predictor
+                </button>
+                <button id="close-disclaimer" class="mt-2 text-gray-600 hover:text-gray-800 text-sm"><i class="fas fa-times mr-1"></i> Close (After Unlock)</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container" id="main-content" style="pointer-events: none; opacity: 0.5; transition: opacity 0.5s ease">
+        <header class="text-center mb-12 animate__animated animate__fadeInDown">
+            <div class="inline-block p-6 bg-white rounded-full shadow-2xl mb-5 animate__animated animate__zoomIn">
+                <i class="fas fa-crown text-5xl gradient-text"></i>
+            </div>
+            <h1 class="text-5xl font-extrabold mb-4"><span class="gradient-text">KCET 2025</span> Elite Predictor</h1>
+            <p class="text-lg text-gray-700 max-w-md mx-auto animate__animated animate__fadeIn animate__delay-1s">Unleash your potential with cutting-edge rank predictions!</p>
+            <div class="theme-selector animate__animated animate__fadeIn animate__delay-2s">
+                <div class="theme-option active" data-theme="light" style="background: #f5f3ff;" title="Light"></div>
+                <div class="theme-option" data-theme="dark" style="background: #4c1d95;" title="Dark"></div>
+            </div>
+        </header>
+
+        <section class="glass-card mb-12 p-6 animate__animated animate__fadeIn banner" data-tilt data-tilt-max="10">
+            <div class="flex items-start">
+                <div class="flex-shrink-0 pt-1">
+                    <i class="fas fa-exclamation-triangle text-red-600 text-2xl"></i>
+                </div>
+                <div class="ml-4">
+                    <h3 class="text-xl font-semibold text-red-800">Read the Disclaimer</h3>
+                    <p class="text-base text-red-700">
+                        Predictions are estimates only.
+                        <a href="#" class="font-medium underline hover:text-red-900" onclick="switchTab('disclaimer')">Learn more</a>
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section class="glass-card p-6 animate__animated animate__fadeInUp" data-tilt data-tilt-max="10">
+            <nav class="flex mb-8 tab-nav">
+                <button class="tab-btn active" data-tab="predictor"><i class="fas fa-calculator mr-2"></i> Predictor</button>
+                <button class="tab-btn" data-tab="breakdown"><i class="fas fa-chart-pie mr-2"></i> Breakdown</button>
+                <button class="tab-btn" data-tab="progress"><i class="fas fa-chart-line mr-2"></i> Progress</button>
+                <button class="tab-btn" data-tab="disclaimer"><i class="fas fa-exclamation-triangle mr-2"></i> Disclaimer</button>
+            </nav>
+
+            <div class="tab-content active" id="predictor">
+                <h2 class="text-3xl font-bold mb-8 flex items-center animate__animated animate__fadeIn"><i class="fas fa-calculator mr-3 gradient-text"></i> Rank Predictor</h2>
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div class="lg:col-span-2 space-y-8">
+                        <div class="glass-card p-6 animate__animated animate__fadeIn" data-tilt data-tilt-max="8">
+                            <h3 class="text-2xl font-semibold mb-5 gradient-text">Quick Estimate</h3>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-5">
+                                <div>
+                                    <label class="block text-base font-medium text-gray-800 mb-2">KCET PCM (0-180)</label>
+                                    <input type="number" id="quick-cet" class="w-full input-field" placeholder="e.g., 90" min="0" max="180">
+                                </div>
+                                <div>
+                                    <label class="block text-base font-medium text-gray-800 mb-2">PUC PCM % (0-100)</label>
+                                    <input type="number" id="quick-puc" class="w-full input-field" placeholder="e.g., 85" min="0" max="100">
+                                </div>
+                            </div>
+                            <div id="quick-result" class="mt-5 hidden">
+                                <p class="text-base text-gray-700">Estimated Rank: <span id="quick-rank" class="font-semibold gradient-text">---</span></p>
+                                <p class="text-base text-gray-700">Range: <span id="quick-range" class="font-semibold">---</span></p>
+                                <p class="text-base text-gray-700 mt-3" id="quick-analysis"></p>
+                            </div>
+                        </div>
+
+                        <div class="glass-card p-6 animate__animated animate__fadeIn animate__delay-1s" data-tilt data-tilt-max="8">
+                            <h3 class="text-2xl font-semibold mb-5 gradient-text">Detailed Calculator</h3>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-8 mb-5">
+                                <div class="mark-selector">
+                                    <label class="block text-base font-medium text-gray-800 mb-3">KCET PCM (0-180)</label>
+                                    <div class="mark-circle" onclick="focusInput('kcet-total')">
+                                        <span class="mark-value" id="kcet-value">90</span>
+                                    </div>
+                                    <input type="range" id="kcet-total" class="range-slider mt-3" min="0" max="180" value="90">
+                                    <div class="mark-controls">
+                                        <button class="mark-btn large-dec" onclick="adjustMark('kcet', -10)">−−</button>
+                                        <button class="mark-btn decrement" onclick="adjustMark('kcet', -1)">−</button>
+                                        <button class="mark-btn increment" onclick="adjustMark('kcet', 1)">+</button>
+                                        <button class="mark-btn large-inc" onclick="adjustMark('kcet', 10)">++</button>
+                                    </div>
+                                </div>
+                                <div class="mark-selector">
+                                    <label class="block text-base font-medium text-gray-800 mb-3">PUC PCM % (0-100)</label>
+                                    <div class="mark-circle" onclick="focusInput('puc-percentage')">
+                                        <span class="mark-value" id="puc-value">60</span>
+                                    </div>
+                                    <input type="range" id="puc-percentage" class="range-slider mt-3" min="0" max="100" value="60">
+                                    <div class="mark-controls">
+                                        <button class="mark-btn large-dec" onclick="adjustMark('puc', -10)">−−</button>
+                                        <button class="mark-btn decrement" onclick="adjustMark('puc', -1)">−</button>
+                                        <button class="mark-btn increment" onclick="adjustMark('puc', 1)">+</button>
+                                        <button class="mark-btn large-inc" onclick="adjustMark('puc', 10)">++</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-5">
+                                <label class="block text-base font-medium text-gray-800 mb-3">Category <i class="fas fa-info-circle info-btn"><span class="tooltip-text">Category affects college cutoffs, not ranks.</span></i></label>
+                                <div class="flex flex-wrap gap-3">
+                                    <button class="category-btn active" data-category="general">General</button>
+                                    <button class="category-btn" data-category="obc">OBC</button>
+                                    <button class="category-btn" data-category="sc">SC</button>
+                                    <button class="category-btn" data-category="st">ST</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="gradient-result p-6 animate__animated animate__fadeIn animate__delay-2s" data-tilt data-tilt-max="8">
+                        <h3 class="text-2xl font-semibold mb-5">Your Elite Rank</h3>
+                        <div class="rank-meter">
+                            <div id="meterCircle" class="meter-circle">
+                                <span id="predicted-rank" class="meter-text">---</span>
+                            </div>
+                        </div>
+                        <div class="text-center mt-4 text-sm">
+                            <p>Range: <span id="predicted-range">---</span></p>
+                            <p>Percentile: <span id="predicted-percentile">---</span></p>
+                            <p id="competition-note"></p>
+                            <p id="social-proof">Among ~3,12,000 candidates</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-content" id="breakdown">
+                <h2 class="text-3xl font-bold mb-8 flex items-center animate__animated animate__fadeIn"><i class="fas fa-chart-pie mr-3 gradient-text"></i> Result Breakdown</h2>
+                <div id="breakdown-content" class="space-y-8">
+                    <div class="text-center py-10 animate__animated animate__fadeIn">
+                        <div class="inline-block p-5 bg-white rounded-full mb-3 animate__animated animate__pulse"><i class="fas fa-search text-3xl text-blue-600"></i></div>
+                        <h3 class="text-xl font-medium text-gray-700 mb-2">Calculate to see stats</h3>
+                        <p class="text-base text-gray-600">Detailed insights await</p>
+                    </div>
+                </div>
+                <div class="breakdown-buttons animate__animated animate__fadeIn">
+                    <button id="recalculate-btn" class="gradient-bg text-white py-2.5 px-5 rounded-xl text-base font-semibold premium-btn"><i class="fas fa-calculator mr-2"></i> Recalculate</button>
+                    <button id="download-png-btn" class="gradient-bg text-white py-2.5 px-5 rounded-xl text-base font-semibold premium-btn"><i class="fas fa-image mr-2"></i> Download PNG</button>
+                    <button id="download-pdf-btn" class="gradient-bg text-white py-2.5 px-5 rounded-xl text-base font-semibold premium-btn"><i class="fas fa-file-pdf mr-2"></i> Download PDF</button>
+                </div>
+            </div>
+
+            <div class="tab-content" id="progress">
+                <h2 class="text-3xl font-bold mb-8 flex items-center animate__animated animate__fadeIn"><i class="fas fa-chart-line mr-3 gradient-text"></i> Progress Tracker</h2>
+                <div id="progress-content" class="space-y-6 animate__animated animate__fadeIn">
+                    <div class="text-center py-10">
+                        <div class="inline-block p-5 bg-white rounded-full mb-3 animate__animated animate__pulse">
+                            <i class="fas fa-history text-3xl text-blue-600"></i>
+                        </div>
+                        <h3 class="text-xl font-medium text-gray-700 mb-2">No Predictions Yet</h3>
+                        <p class="text-base text-gray-600">Calculate your rank to track progress!</p>
+                    </div>
+                </div>
+                <div class="mt-8 animate__animated animate__fadeIn">
+                    <canvas id="progress-chart" class="progress-canvas"></canvas>
+                </div>
+            </div>
+
+            <div class="tab-content" id="disclaimer">
+                <h2 class="text-3xl font-bold mb-8 flex items-center animate__animated animate__fadeIn"><i class="fas fa-exclamation-triangle mr-3 gradient-text"></i> Disclaimer</h2>
+                <div class="glass-card p-6 animate__animated animate__fadeIn" data-tilt data-tilt-max="8">
+                    <h3 class="text-2xl font-semibold mb-5 gradient-text">Important Information</h3>
+                    <div class="space-y-6 text-base text-gray-100 leading-loose">
+                        <p class="flex items-start"><i class="fas fa-info-circle mr-2 mt-1 text-blue-500"></i><span><strong>Estimate Only:</strong> This tool provides rank predictions based on historical KCET data (2023–2025, ~3.12 lakh candidates). It is not an official KEA result.</span></p>
+                        <p class="flex items-start"><i class="fas fa-exclamation-triangle mr-2 mt-1 text-yellow-500"></i><span><strong>Accuracy Limitations:</strong> Predictions may vary due to score normalization, exam difficulty, or KEA policy changes.</span></p>
+                        <p class="flex items-start"><i class="fas fa-ban mr-2 mt-1 text-red-500"></i><span><strong>Eligibility Restrictions:</strong> Per KEA 2024 rules, IIT/NIT students via JEE are barred from CET counseling.</span></p>
+                        <p class="flex items-start"><i class="fas fa-link mr-2 mt-1 text-blue-500"></i><span><strong>Official Source:</strong> Verify results at the official KEA website.</span></p>
+                        <p class="flex items-start"><i class="fas fa-lock mr-2 mt-1 text-green-500"></i><span><strong>Data Privacy:</strong> All inputs are processed locally. No data is stored or shared.</span></p>
+                        <p class="flex items-start"><i class="fas fa-hand-paper mr-2 mt-1 text-red-500"></i><span><strong>No Liability:</strong> Not affiliated with KEA or NTA. No responsibility for errors or decisions based on predictions.</span></p>
+                        <p class="flex items-start"><i class="fas fa-users mr-2 mt-1 text-purple-500"></i><span><strong>Category Usage:</strong> Category selection impacts college cutoffs, not ranks.</span></p>
+                        <p class="flex items-start"><i class="fas fa-clock mr-2 mt-1 text-orange-500"></i><span><strong>Usage Limits:</strong> This tool is for personal use only and should not be redistributed or used commercially.</span></p>
+                        <p class="flex items-start"><i class="fas fa-graduation-cap mr-2 mt-1 text-teal-500"></i><span><strong>Educational Purpose:</strong> Intended to assist students in planning; consult official sources for final decisions.</span></p>
+                    </div>
+                    <button id="reread-disclaimer" class="mt-6 w-full gradient-bg text-white py-2.5 px-5 rounded-xl text-base font-semibold premium-btn"><i class="fas fa-sync-alt mr-2"></i> Re-read Disclaimer</button>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <button class="fab animate__animated animate__bounce" onclick="calculateRank()"><i class="fas fa-bolt"></i></button>
+<section class="glass-card p-4 sm:p-6 mt-10 text-center animate__animated animate__fadeIn" data-tilt data-tilt-max="8">
+  <div class="flex flex-col items-center space-y-4">
+    <i class="fab fa-discord text-4xl sm:text-5xl text-indigo-600 animate__pulse"></i>
+    <h3 class="text-xl sm:text-2xl font-bold gradient-text leading-snug">Need Help or Have Questions?</h3>
+    <p class="text-sm sm:text-base text-gray-700 px-2 sm:px-6">Join our official Discord server to ask your queries, get updates, or chat with fellow aspirants.</p>
+    <a href="https://discord.gg/EMwKjsEEc6" target="_blank"
+       class="inline-block mt-2 sm:mt-4 px-5 sm:px-6 py-2.5 sm:py-3 rounded-xl text-white font-semibold text-base sm:text-lg premium-btn gradient-bg hover:scale-105 transition-transform duration-300 shadow-lg">
+      <i class="fab fa-discord mr-2"></i> Join the Discord Community
+    </a>
+  </div>
+</section>
+<div class="text-center text-sm text-gray-600 mt-10 mb-4 px-4 animate__animated animate__fadeInUp">
+  <p>Built with care by <span class="font-medium text-indigo-600">u/infamblackhoodieguy</span>. Special thanks to <span class="text-pink-500">u/FlakyReview-6662</span> & <span class="text-blue-500">u/ra1dh_10</span>.</p>
+</div>
+<script>
+    let disclaimerAccepted = false;
+    let currentTimer = null;
+    let trendChartInstance = null;
+    let rangeChartInstance = null;
+    let radarChartInstance = null;
+    let progressChartInstance = null;
+
+    const rankTable = [
+        { score: 98, rank: 1 },
+        { score: 90, rank: 200 },
+        { score: 86, rank: 1500 }, // Calibrated for KCET 140, PUC 94 (~85.8889)
+        { score: 85, rank: 2000 },
+        { score: 80, rank: 4000 },
+        { score: 75, rank: 8000 },
+        { score: 70, rank: 15000 },
+        { score: 65, rank: 30000 },
+        { score: 62, rank: 45000 },
+        { score: 60, rank: 60000 },
+        { score: 58, rank: 75000 },
+        { score: 55, rank: 90000 },
+        { score: 50, rank: 120000 },
+        { score: 45, rank: 160000 },
+        { score: 40, rank: 190000 }
+    ];
+
+    const trendData = {
+        2022: [1, 150, 1200, 1800, 3500, 7000, 13000, 25000, 40000, 55000, 70000, 85000, 110000, 140000, 170000],
+        2023: [1, 180, 1300, 1900, 3800, 7500, 14000, 28000, 43000, 58000, 72000, 88000, 115000, 150000, 180000],
+        2024: [1, 200, 1500, 2000, 4000, 8000, 15000, 30000, 45000, 60000, 75000, 90000, 120000, 160000, 190000]
+    };
+
+    function safeLocalStorage(action, key, value) {
+        try {
+            if (action === 'set') {
+                localStorage.setItem(key, value);
+                return true;
+            } else if (action === 'get') {
+                return localStorage.getItem(key);
+            }
+        } catch (err) {
+            console.error('localStorage error:', err);
+            return action === 'get' ? null : false;
+        }
+    }
+
+    function switchTab(tabId) {
+        try {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            document.querySelector(`[data-tab="${tabId}"]`).classList.add('active');
+            document.getElementById(tabId).classList.add('active');
+            if (tabId === 'progress') loadSavedResults();
+            if (tabId === 'breakdown') {
+                const cet = parseFloat(document.getElementById('kcet-total').value) || 0;
+                const puc = parseFloat(document.getElementById('puc-percentage').value) || 0;
+                const category = document.querySelector('.category-btn.active')?.dataset.category || 'general';
+                const rankData = predictKCETRank(cet, puc);
+                updateBreakdown(rankData.composite, rankData, cet, puc, category);
+            }
+        } catch (err) {
+            console.error('Tab switch error:', err);
+            alert('Error switching tabs. Please try again.');
+        }
+    }
+
+    function setTheme(theme) {
+        try {
+            document.documentElement.setAttribute('data-theme', theme);
+            document.querySelectorAll('.theme-option').forEach(opt => opt.classList.remove('active'));
+            document.querySelector(`.theme-option[data-theme="${theme}"]`).classList.add('active');
+            safeLocalStorage('set', 'theme', theme);
+        } catch (err) {
+            console.error('Theme error:', err);
+        }
+    }
+
+    function adjustMark(type, delta) {
+        try {
+            const input = document.getElementById(type === 'kcet' ? 'kcet-total' : 'puc-percentage');
+            let value = parseFloat(input.value) + delta;
+            value = Math.max(parseFloat(input.min), Math.min(parseFloat(input.max), value));
+            input.value = value;
+            updateMark(type, value);
+        } catch (err) {
+            console.error('Adjust mark error:', err);
+        }
+    }
+
+    function updateMark(type, value) {
+        try {
+            const valueDisplay = document.getElementById(type === 'kcet' ? 'kcet-value' : 'puc-value');
+            valueDisplay.textContent = value;
+            updateRankLive(type);
+        } catch (err) {
+            console.error('Update mark error:', err);
+        }
+    }
+
+    function focusInput(id) {
+        try {
+            document.getElementById(id).focus();
+        } catch (err) {
+            console.error('Focus input error:', err);
+        }
+    }
+
+    function predictKCETRank(cet, puc) {
+        try {
+            const kcetPercentage = (cet / 180) * 100;
+            const combinedScore = 0.5 * kcetPercentage + 0.5 * puc;
+
+            if (isNaN(combinedScore) || combinedScore < 0 || combinedScore > 100) {
+                throw new Error('Please enter valid marks (KCET: 0-180, PUC: 0-100)');
+            }
+
+            let result = null;
+            if (combinedScore >= rankTable[0].score) {
+                result = { low: 1, medium: 1, high: 1, composite: combinedScore };
+            } else if (combinedScore <= rankTable[rankTable.length - 1].score) {
+                result = { low: 171000, medium: 190000, high: 209000, composite: combinedScore };
+            } else {
+                for (let i = 0; i < rankTable.length - 1; i++) {
+                    const currentEntry = rankTable[i];
+                    const nextEntry = rankTable[i + 1];
+                    if (combinedScore <= currentEntry.score && combinedScore >= nextEntry.score) {
+                        const scoreDiff = currentEntry.score - nextEntry.score;
+                        const rankDiff = nextEntry.rank - currentEntry.rank;
+                        const scoreOffset = currentEntry.score - combinedScore;
+                        const interpolatedRank = currentEntry.rank + (scoreOffset / scoreDiff) * rankDiff;
+                        const adjustedRank = interpolatedRank * 1.023;
+                        const medium = Math.round(adjustedRank);
+                        const low = Math.round(medium * 0.95);
+                        const high = Math.round(medium * 1.05);
+                        result = { low, medium, high, composite: combinedScore };
+                        break;
+                    }
+                }
+            }
+
+            if (!result) {
+                let closest = rankTable[0];
+                let minDiff = Math.abs(combinedScore - closest.score);
+                for (let i = 1; i < rankTable.length; i++) {
+                    const diff = Math.abs(combinedScore - rankTable[i].score);
+                    if (diff < minDiff) {
+                        minDiff = diff;
+                        closest = rankTable[i];
+                    }
+                }
+                const medium = Math.round(closest.rank * 1.023);
+                result = {
+                    low: Math.round(medium * 0.95),
+                    medium,
+                    high: Math.round(medium * 1.05),
+                    composite: combinedScore
+                };
+            }
+
+            return result;
+        } catch (error) {
+            throw new Error(error.message || 'Error calculating rank');
+        }
+    }
+
+    function getPercentile(composite) {
+        try {
+            if (composite >= 95) return 'Top 1%';
+            if (composite >= 90) return 'Top 5%';
+            if (composite >= 80) return 'Top 15%';
+            return 'Below Average';
+        } catch (err) {
+            console.error('Percentile error:', err);
+            return 'N/A';
+        }
+    }
+
+    function getRankAnalysis(rank) {
+        try {
+            if (rank <= 1000) return 'Elite rank! Likely to secure top colleges like RVCE or BMSCE.';
+            if (rank <= 5000) return 'Great rank! Strong chances for top branches.';
+            if (rank <= 15000) return 'Solid rank! Good college options available.';
+            if (rank <= 30000) return 'Moderate rank. Explore various colleges.';
+            return 'Lower rank. Consider all possible options.';
+        } catch (err) {
+            console.error('Rank analysis error:', err);
+            return 'Error in analysis.';
+        }
+    }
+
+    function getCollegeSuggestions(rank, category) {
+        try {
+            const colleges = {
+                general: [
+                    { rank: 1000, name: 'RVCE, BMSCE', branch: 'CSE, ECE' },
+                    { rank: 5000, name: 'MSRIT, PESIT', branch: 'ISE, EEE' },
+                    { rank: 15000, name: 'BMSIT, SIT', branch: 'ME, CE' },
+                    { rank: 30000, name: 'NMIT, DSCE', branch: 'All branches' }
+                ],
+                obc: [
+                    { rank: 1500, name: 'RVCE, BMSCE', branch: 'CSE, ECE' },
+                    { rank: 7000, name: 'MSRIT, PESIT', branch: 'ISE, EEE' },
+                    { rank: 20000, name: 'BMSIT, SIT', branch: 'ME, CE' },
+                    { rank: 40000, name: 'NMIT, DSCE', branch: 'All branches' }
+                ],
+                sc: [
+                    { rank: 2000, name: 'RVCE, BMSCE', branch: 'CSE, ECE' },
+                    { rank: 10000, name: 'MSRIT, PESIT', branch: 'ISE, EEE' },
+                    { rank: 25000, name: 'BMSIT, SIT', branch: 'ME, CE' },
+                    { rank: 50000, name: 'NMIT, DSCE', branch: 'All branches' }
+                ],
+                st: [
+                    { rank: 2500, name: 'RVCE, BMSCE', branch: 'CSE, ECE' },
+                    { rank: 12000, name: 'MSRIT, PESIT', branch: 'ISE, EEE' },
+                    { rank: 30000, name: 'BMSIT, SIT', branch: 'ME, CE' },
+                    { rank: 60000, name: 'NMIT, DSCE', branch: 'All branches' }
+                ]
+            };
+            const suggestions = colleges[category] || colleges.general;
+            return suggestions.find(s => rank <= s.rank) || { name: 'Other colleges', branch: 'All branches' };
+        } catch (err) {
+            console.error('College suggestions error:', err);
+            return { name: 'Error', branch: 'N/A' };
+        }
+    }
+
+    function calculatePercentile(rank) {
+        try {
+            const totalCandidates = 312000;
+            return ((totalCandidates - rank) / totalCandidates * 100).toFixed(2);
+        } catch (err) {
+            console.error('Percentile calculation error:', err);
+            return '0';
+        }
+    }
+
+    function updateRankLive(type) {
+        try {
+            if (!disclaimerAccepted) return;
+            if (type === 'quick') {
+                const cet = parseFloat(document.getElementById('quick-cet').value) || 0;
+                const puc = parseFloat(document.getElementById('quick-puc').value) || 0;
+                if (cet >= 0 && cet <= 180 && puc >= 0 && puc <= 100) {
+                    const rankData = predictKCETRank(cet, puc);
+                    document.getElementById('quick-rank').textContent = rankData.medium.toLocaleString();
+                    document.getElementById('quick-range').textContent = `${rankData.low.toLocaleString()}–${rankData.high.toLocaleString()}`;
+                    document.getElementById('quick-analysis').textContent = getRankAnalysis(rankData.medium);
+                    document.getElementById('quick-result').classList.remove('hidden');
+                } else {
+                    document.getElementById('quick-result').classList.add('hidden');
+                }
+            } else {
+                const cet = parseFloat(document.getElementById('kcet-total').value) || 0;
+                const puc = parseFloat(document.getElementById('puc-percentage').value) || 0;
+                if (cet >= 0 && cet <= 180 && puc >= 0 && puc <= 100) {
+                    const rankData = predictKCETRank(cet, puc);
+                    const percentile = getPercentile(rankData.composite);
+                    document.getElementById('predicted-rank').textContent = rankData.medium.toLocaleString();
+                    document.getElementById('predicted-range').textContent = `${rankData.low.toLocaleString()}–${rankData.high.toLocaleString()}`;
+                    document.getElementById('predicted-percentile').textContent = percentile;
+                    document.getElementById('competition-note').textContent = getRankAnalysis(rankData.medium);
+                    document.getElementById('meterCircle').style.setProperty('--progress', `${rankData.composite}%`);
+                }
+            }
+        } catch (err) {
+            console.error('Update rank live error:', err);
+        }
+    }
+
+    function calculateRank() {
+        try {
+            if (!disclaimerAccepted) {
+                alert('Please accept the disclaimer.');
+                return;
+            }
+            const cet = parseFloat(document.getElementById('kcet-total').value) || 0;
+            const puc = parseFloat(document.getElementById('puc-percentage').value) || 0;
+            const category = document.querySelector('.category-btn.active')?.dataset.category || 'general';
+            if (cet < 0 || cet > 180 || puc < 0 || puc > 100) {
+                alert('Please enter valid scores: KCET (0-180), PUC (0-100).');
+                return;
+            }
+            const rankData = predictKCETRank(cet, puc);
+            updateMainRank(rankData);
+            saveResult(cet, puc, rankData, category);
+            triggerConfetti();
+            switchTab('breakdown');
+        } catch (err) {
+            console.error('Calculate rank error:', err);
+            alert('An error occurred while calculating your rank.');
+        }
+    }
+
+    function updateMainRank(rankData) {
+        try {
+            const rankDisplay = document.getElementById('predicted-rank');
+            const rangeDisplay = document.getElementById('predicted-range');
+            const percentileDisplay = document.getElementById('predicted-percentile');
+            const noteDisplay = document.getElementById('competition-note');
+            const meterCircle = document.getElementById('meterCircle');
+            rankDisplay.textContent = rankData.medium.toLocaleString();
+            rangeDisplay.textContent = `${rankData.low.toLocaleString()}–${rankData.high.toLocaleString()}`;
+            percentileDisplay.textContent = getPercentile(rankData.composite);
+            noteDisplay.textContent = getRankAnalysis(rankData.medium);
+            meterCircle.style.setProperty('--progress', `${rankData.composite}%`);
+            meterCircle.classList.add('animate__pulse');
+            setTimeout(() => meterCircle.classList.remove('animate__pulse'), 1500);
+        } catch (err) {
+            console.error('Update main rank error:', err);
+        }
+    }
+
+    function updateBreakdown(composite, rankData, cet, puc, category) {
+        try {
+            const breakdownContent = document.getElementById('breakdown-content');
+            if (!breakdownContent) throw new Error('Breakdown content element not found');
+            const percentile = calculatePercentile(rankData.medium);
+            const college = getCollegeSuggestions(rankData.medium, category);
+            breakdownContent.innerHTML = `
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 animate__animated animate__fadeIn">
+                    <div class="glass-card p-5" data-tilt data-tilt-max="8">
+                        <h3 class="text-xl font-semibold mb-3 gradient-text">Score Breakdown</h3>
+                        <div class="space-y-3">
+                            <div>
+                                <p class="text-base">KCET PCM: ${cet.toFixed(1)}/180 (${((cet / 180) * 100).toFixed(1)}%)</p>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: ${((cet / 180) * 100).toFixed(1)}%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <p class="text-base">PUC PCM: ${puc.toFixed(1)}%</p>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: ${puc.toFixed(1)}%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <p class="text-base">Composite Score: ${composite.toFixed(1)}%</p>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: ${composite.toFixed(1)}%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <p class="text-base">Percentile: ${percentile}%</p>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: ${percentile}%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="glass-card p-5" data-tilt data-tilt-max="8">
+                        <h3 class="text-xl font-semibold mb-3 gradient-text">Rank Insights</h3>
+                        <p class="text-base">Predicted Rank: ${rankData.medium.toLocaleString()}</p>
+                        <p class="text-base">Range: ${rankData.low.toLocaleString()}–${rankData.high.toLocaleString()}</p>
+                        <p class="text-base">Category: ${category.toUpperCase()}</p>
+                        <p class="text-base mt-2">${getRankAnalysis(rankData.medium)}</p>
+                        <p class="text-base mt-2">Among ~3,12,000 candidates</p>
+                    </div>
+                </div>
+                <div class="mt-8 animate__animated animate__fadeIn">
+                    <canvas id="trend-chart" class="trend-canvas"></canvas>
+                </div>
+                <div class="mt-8 animate__animated animate__fadeIn">
+                    <canvas id="range-chart" class="range-canvas"></canvas>
+                </div>
+                <div class="mt-8 animate__animated animate__fadeIn">
+                    <canvas id="radar-chart" class="radar-canvas"></canvas>
+                </div>
+            `;
+            setTimeout(() => {
+                initializeCharts(cet, puc, rankData);
+                initializeTilt();
+            }, 300);
+        } catch (err) {
+            console.error('Update breakdown error:', err);
+            document.getElementById('breakdown-content').innerHTML = `
+                <div class="text-center py-10">
+                    <h3 class="text-xl font-medium text-red-600">Error Loading Breakdown</h3>
+                    <p class="text-base text-gray-600">Please try recalculating.</p>
+                </div>
+            `;
+        }
+    }
+
+    function initializeCharts(cet, puc, rankData) {
+        try {
+            const trendCanvas = document.getElementById('trend-chart');
+            const rangeCanvas = document.getElementById('range-chart');
+            const radarCanvas = document.getElementById('radar-chart');
+            if (!trendCanvas || !rangeCanvas || !radarCanvas) {
+                throw new Error('One or more chart canvases not found');
+            }
+            updateTrendChart(cet, puc, rankData);
+            updateRangeChart(rankData);
+            updateRadarChart(cet, puc);
+        } catch (err) {
+            console.error('Initialize charts error:', err);
+        }
+    }
+
+    function updateTrendChart(cet, puc, rankData) {
+        try {
+            const ctx = document.getElementById('trend-chart');
+            if (!ctx) throw new Error('Trend chart canvas not found');
+            if (trendChartInstance) trendChartInstance.destroy();
+            const index = rankTable.findIndex(entry => entry.rank === rankTable.find(e => Math.abs(rankData.composite - e.score) <= 10)?.rank) || 0;
+            const ranks = [
+                { year: '2022', rank: trendData[2022][index] || rankTable[index].rank },
+                { year: '2023', rank: trendData[2023][index] || rankTable[index].rank },
+                { year: '2024', rank: rankTable[index].rank }
+            ];
+            trendChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['2022', '2023', '2024'],
+                    datasets: [{
+                        label: 'Rank Trend',
+                        data: ranks.map(r => r.rank),
+                        backgroundColor: '#6d28d9',
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { beginAtZero: true, title: { display: true, text: 'Rank' } }
+                    },
+                    plugins: {
+                        legend: { display: false },
+                        title: { display: true, text: 'Rank Trend (2022–2024)', font: { size: 16 } }
+                    }
+                }
+            });
+        } catch (err) {
+            console.error('Trend chart error:', err);
+        }
+    }
+
+    function updateRangeChart(rankData) {
+        try {
+            const ctx = document.getElementById('range-chart');
+            if (!ctx) throw new Error('Range chart canvas not found');
+            if (rangeChartInstance) rangeChartInstance.destroy();
+            rangeChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Low', 'Predicted', 'High'],
+                    datasets: [{
+                        label: 'Rank Range',
+                        data: [rankData.low, rankData.medium, rankData.high],
+                        backgroundColor: ['#10b981', '#6d28d9', '#ec4899'],
+                        borderColor: ['#0d8c6a', '#5b21b6', '#db2777'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            suggestedMax: rankData.high * 1.5,
+                            title: { display: true, text: 'Rank' }
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false },
+                        title: { display: true, text: 'Rank Range', font: { size: 16 } }
+                    }
+                }
+            });
+        } catch (err) {
+            console.error('Range chart error:', err);
+        }
+    }
+
+    function updateRadarChart(cet, puc) {
+        try {
+            const ctx = document.getElementById('radar-chart');
+            if (!ctx) throw new Error('Radar chart canvas not found');
+            if (radarChartInstance) radarChartInstance.destroy();
+            const assumedPhysics = cet / 3;
+            const assumedChemistry = cet / 3;
+            const assumedMaths = cet / 3;
+            radarChartInstance = new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: ['Physics', 'Chemistry', 'Maths', 'PUC'],
+                    datasets: [{
+                        label: 'Performance',
+                        data: [assumedPhysics, assumedChemistry, assumedMaths, puc],
+                        backgroundColor: 'rgba(109, 40, 217, 0.2)',
+                        borderColor: '#6d28d9',
+                        pointBackgroundColor: '#ec4899'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: { beginAtZero: true, max: 100 }
+                    },
+                    plugins: {
+                        legend: { display: false },
+                        title: { display: true, text: 'Subject-wise Performance', font: { size: 16 } }
+                    }
+                }
+            });
+        } catch (err) {
+            console.error('Radar chart error:', err);
+        }
+    }
+
+    function downloadBreakdownPNG() {
+        try {
+            const cet = parseFloat(document.getElementById('kcet-total').value) || 0;
+            const puc = parseFloat(document.getElementById('puc-percentage').value) || 0;
+            const rankData = predictKCETRank(cet, puc);
+            const category = document.querySelector('.category-btn.active')?.dataset.category || 'general';
+            const college = getCollegeSuggestions(rankData.medium, category);
+            const percentile = calculatePercentile(rankData.medium);
+
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = 500;
+            canvas.height = 350;
+
+            ctx.fillStyle = '#6d28d9';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
+            ctx.fillRect(20, 20, 460, 310);
+            ctx.strokeStyle = '#6d28d9';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(20, 20, 460, 310);
+
+            ctx.fillStyle = '#6d28d9';
+            ctx.font = 'bold 28px Poppins';
+            ctx.textAlign = 'center';
+            ctx.fillText('KCET 2025 Rank Card', 250, 60);
+
+            ctx.font = 'bold 40px Poppins';
+            ctx.fillStyle = '#ec4899';
+            ctx.fillText(`${rankData.medium.toLocaleString()}`, 250, 110);
+
+            ctx.font = '16px Poppins';
+            ctx.fillStyle = '#1e1b4b';
+            ctx.textAlign = 'left';
+            ctx.fillText(`Rank Range: ${rankData.low.toLocaleString()}–${rankData.high.toLocaleString()}`, 50, 150);
+            ctx.fillText(`KCET Score: ${cet}/180 (${((cet / 180) * 100).toFixed(1)}%)`, 50, 180);
+            ctx.fillText(`PUC PCM: ${puc}%`, 50, 210);
+            ctx.fillText(`Percentile: ${percentile}%`, 50, 240);
+            ctx.fillText(`Category: ${category.toUpperCase()}`, 50, 270);
+            ctx.font = 'italic 12px Poppins';
+            ctx.fillStyle = '#666';
+            ctx.textAlign = 'center';
+            ctx.fillText('Generated by KCET Elite Predictor', 250, 330);
+
+            const link = document.createElement('a');
+            link.href = canvas.toDataURL('image/png');
+            link.download = `KCET_2025_Rank_${rankData.medium}.png`;
+            link.click();
+        } catch (err) {
+            console.error('Download PNG error:', err);
+            alert('Failed to download PNG. Please try again.');
+        }
+    }
+
+    function generateRankCard(cet, puc, rankData, category) {
+        try {
+            const { jsPDF } = window.jspdf;
+            if (!jsPDF) throw new Error('jsPDF library not loaded');
+            const doc = new jsPDF({
+                orientation: 'portrait',
+                unit: 'mm',
+                format: 'a4'
+            });
+
+            const pageWidth = doc.internal.pageSize.getWidth();
+            const pageHeight = doc.internal.pageSize.getHeight();
+            const margin = 20;
+
+            // Background
+            doc.setFillColor(109, 40, 217); // #6d28d9
+            doc.rect(0, 0, pageWidth, pageHeight, 'F');
+
+            // Card
+            doc.setFillColor(255, 255, 255, 0.95);
+            doc.roundedRect(margin, margin, pageWidth - 2 * margin, pageHeight - 2 * margin, 10, 10, 'F');
+            doc.setLineWidth(0.5);
+            doc.setDrawColor(109, 40, 217);
+            doc.roundedRect(margin, margin, pageWidth - 2 * margin, pageHeight - 2 * margin, 10, 10, 'S');
+
+            // Title
+            doc.setFont('helvetica', 'bold'); // Fallback to helvetica if Poppins unavailable
+            doc.setFontSize(24);
+            doc.setTextColor(109, 40, 217);
+            doc.text('KCET 2025 Elite Rank Card', pageWidth / 2, margin + 20, { align: 'center' });
+
+            // Rank
+            doc.setFontSize(36);
+            doc.setTextColor(236, 72, 153); // #ec4899
+            doc.text(`${rankData.medium.toLocaleString()}`, pageWidth / 2, margin + 50, { align: 'center' });
+
+            // Details
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(12);
+            doc.setTextColor(30, 27, 75); // #1e1b4b
+            const college = getCollegeSuggestions(rankData.medium, category);
+            const percentile = calculatePercentile(rankData.medium);
+            const details = [
+                `Rank Range: ${rankData.low.toLocaleString()}–${rankData.high.toLocaleString()}`,
+                `KCET Score: ${cet}/180 (${((cet / 180) * 100).toFixed(1)}%)`,
+                `PUC PCM: ${puc}%`,
+                `Percentile: ${percentile}%`,
+                `Category: ${category.toUpperCase()}`,
+                `Likely Colleges: ${college.name} (${college.branch})`
+            ];
+            details.forEach((line, i) => {
+                doc.text(line, margin + 20, margin + 80 + i * 10);
+            });
+
+            // Footer
+            doc.setFontSize(10);
+            doc.setFont('helvetica', 'italic');
+            doc.setTextColor(100, 100, 100);
+            doc.text('Generated by KCET Elite Predictor | Not an official KEA result', pageWidth / 2, pageHeight - margin - 10, { align: 'center' });
+
+            doc.save(`KCET_2025_Rank_${rankData.medium}.pdf`);
+        } catch (err) {
+            console.error('Download PDF error:', err);
+            alert('Failed to download PDF. Please try again.');
+        }
+    }
+
+    function saveResult(cet, puc, rankData, category) {
+        try {
+            const results = JSON.parse(safeLocalStorage('get', 'kcetResults') || '[]');
+            results.push({
+                cet,
+                puc,
+                rank: rankData.medium,
+                range: `${rankData.low}–${rankData.high}`,
+                percentile: calculatePercentile(rankData.medium),
+                category,
+                timestamp: new Date().toISOString()
+            });
+            safeLocalStorage('set', 'kcetResults', JSON.stringify(results.slice(-10)));
+            loadSavedResults();
+        } catch (err) {
+            console.error('Save result error:', err);
+        }
+    }
+
+    function loadSavedResults() {
+        try {
+            const results = JSON.parse(safeLocalStorage('get', 'kcetResults') || '[]');
+            const progressContent = document.getElementById('progress-content');
+            if (results.length === 0) {
+                progressContent.innerHTML = `
+                    <div class="text-center py-10">
+                        <div class="inline-block p-5 bg-white rounded-full mb-3 animate__animated animate__pulse">
+                            <i class="fas fa-history text-3xl text-blue-600"></i>
+                        </div>
+                        <h3 class="text-xl font-medium text-gray-700 mb-2">No Predictions Yet</h3>
+                        <p class="text-base text-gray-600">Calculate your rank to track progress!</p>
+                    </div>
+                `;
+                updateProgressChart([]);
+                return;
+            }
+            progressContent.innerHTML = `
+                <div class="space-y-4">
+                    ${results.reverse().map((res, i) => `
+                        <div class="glass-card p-4 animate__animated animate__fadeIn animate__delay-${i}s" data-tilt data-tilt-max="8">
+                            <p class="text-base">Rank: ${res.rank.toLocaleString()} (Range: ${res.range})</p>
+                            <p class="text-base">KCET: ${res.cet}/180 | PUC: ${res.puc}%</p>
+                            <p class="text-base">Percentile: ${res.percentile}% | Category: ${res.category.toUpperCase()}</p>
+                            <p class="text-sm text-gray-600">${new Date(res.timestamp).toLocaleString()}</p>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+            updateProgressChart(results);
+            setTimeout(initializeTilt, 300);
+        } catch (err) {
+            console.error('Load saved results error:', err);
+            progressContent.innerHTML = `
+                <div class="text-center py-10">
+                    <h3 class="text-xl font-medium text-red-600">Error Loading Progress</h3>
+                    <p class="text-base text-gray-600">Please try again.</p>
+                </div>
+            `;
+        }
+    }
+
+    function updateProgressChart(results) {
+        try {
+            const ctx = document.getElementById('progress-chart');
+            if (!ctx) throw new Error('Progress chart canvas not found');
+            if (progressChartInstance) progressChartInstance.destroy();
+            progressChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: results.map((_, i) => `Attempt ${i + 1}`),
+                    datasets: [{
+                        label: 'Rank',
+                        data: results.map(r => r.rank),
+                        borderColor: '#6d28d9',
+                        backgroundColor: 'rgba(109, 40, 217, 0.2)',
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { beginAtZero: true, reverse: true, title: { display: true, text: 'Rank' } }
+                    },
+                    plugins: {
+                        legend: { display: false },
+                        title: { display: true, text: 'Rank Progress', font: { size: 16 } }
+                    }
+                }
+            });
+        } catch (err) {
+            console.error('Progress chart error:', err);
+        }
+    }
+
+    function triggerConfetti() {
+        try {
+            confetti({
+                particleCount: 150,
+                spread: 70,
+                origin: { y: 0.6 },
+                colors: ['#6d28d9', '#ec4899', '#a78bfa']
+            });
+        } catch (err) {
+            console.error('Confetti error:', err);
+        }
+    }
+
+    function initializeTilt() {
+        try {
+            VanillaTilt.init(document.querySelectorAll('[data-tilt]'), {
+                max: 10,
+                speed: 400,
+                glare: true,
+                'max-glare': 0.3
+            });
+        } catch (err) {
+            console.error('Tilt initialization error:', err);
+        }
+    }
+
+    function initializeParticles() {
+        try {
+            particlesJS('particles-js', {
+                particles: {
+                    number: { value: 80, density: { enable: true, value_area: 800 } },
+                    color: { value: ['#6d28d9', '#ec4899', '#a78bfa'] },
+                    shape: { type: 'circle' },
+                    opacity: { value: 0.5, random: true },
+                    size: { value: 3, random: true },
+                    line_linked: { enable: true, distance: 150, color: '#a78bfa', opacity: 0.4, width: 1 },
+                    move: { enable: true, speed: 2, direction: 'none', random: true, straight: false, out_mode: 'out', bounce: false }
+                },
+                interactivity: {
+                    detect_on: 'canvas',
+                    events: { onhover: { enable: true, mode: 'repulse' }, onclick: { enable: true, mode: 'push' }, resize: true },
+                    modes: { repulse: { distance: 100, duration: 0.4 }, push: { particles_nb: 4 } }
+                },
+                retina_detect: true
+            });
+        } catch (err) {
+            console.error('Particles initialization error:', err);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        try {
+            initializeParticles();
+            initializeTilt();
+
+            // Theme setup
+            const savedTheme = safeLocalStorage('get', 'theme') || 'light';
+            setTheme(savedTheme);
+
+            // Disclaimer timer
+            let timeLeft = 10;
+            const timerDisplay = document.getElementById('disclaimer-timer');
+            const unlockBtn = document.getElementById('unlock-btn');
+            currentTimer = setInterval(() => {
+                timeLeft--;
+                timerDisplay.textContent = `Unlock in ${timeLeft}s...`;
+                if (timeLeft <= 0) {
+                    clearInterval(currentTimer);
+                    timerDisplay.textContent = 'Ready to unlock!';
+                    unlockBtn.disabled = false;
+                    unlockBtn.classList.remove('disabled:opacity-50');
+                }
+            }, 1000);
+
+            // Event listeners
+            document.getElementById('unlock-btn').addEventListener('click', () => {
+                disclaimerAccepted = true;
+                document.getElementById('disclaimer-overlay').classList.add('animate__fadeOut');
+                setTimeout(() => {
+                    document.getElementById('disclaimer-overlay').style.display = 'none';
+                    document.getElementById('main-content').style.pointerEvents = 'auto';
+                    document.getElementById('main-content').style.opacity = '1';
+                }, 500);
+            });
+
+            document.getElementById('close-disclaimer').addEventListener('click', () => {
+                if (disclaimerAccepted) {
+                    document.getElementById('disclaimer-overlay').classList.add('animate__fadeOut');
+                    setTimeout(() => {
+                        document.getElementById('disclaimer-overlay').style.display = 'none';
+                    }, 500);
+                }
+            });
+
+            document.getElementById('reread-disclaimer').addEventListener('click', () => {
+                document.getElementById('disclaimer-overlay').style.display = 'flex';
+                document.getElementById('disclaimer-overlay').classList.remove('animate__fadeOut');
+                document.getElementById('disclaimer-overlay').classList.add('animate__fadeIn');
+            });
+
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+            });
+
+            document.querySelectorAll('.theme-option').forEach(opt => {
+                opt.addEventListener('click', () => setTheme(opt.dataset.theme));
+            });
+
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                });
+            });
+
+            document.getElementById('kcet-total').addEventListener('input', (e) => {
+                const value = parseFloat(e.target.value) || 0;
+                updateMark('kcet', value);
+            });
+
+            document.getElementById('puc-percentage').addEventListener('input', (e) => {
+                const value = parseFloat(e.target.value) || 0;
+                updateMark('puc', value);
+            });
+
+            document.getElementById('quick-cet').addEventListener('input', () => updateRankLive('quick'));
+            document.getElementById('quick-puc').addEventListener('input', () => updateRankLive('quick'));
+
+            document.getElementById('recalculate-btn').addEventListener('click', () => switchTab('predictor'));
+
+            document.getElementById('download-png-btn').addEventListener('click', downloadBreakdownPNG);
+
+            document.getElementById('download-pdf-btn').addEventListener('click', () => {
+                const cet = parseFloat(document.getElementById('kcet-total').value) || 0;
+                const puc = parseFloat(document.getElementById('puc-percentage').value) || 0;
+                const rankData = predictKCETRank(cet, puc);
+                const category = document.querySelector('.category-btn.active')?.dataset.category || 'general';
+                generateRankCard(cet, puc, rankData, category);
+            });
+
+            // Initialize default values
+            updateMark('kcet', parseFloat(document.getElementById('kcet-total').value));
+            updateMark('puc', parseFloat(document.getElementById('puc-percentage').value));
+        } catch (err) {
+            console.error('Initialization error:', err);
+            alert('An error occurred while loading the predictor. Please refresh the page.');
+        }
+    });
+</script>
+</body>
+</html>
