@@ -788,27 +788,28 @@
     let progressChartInstance = null;
 
     const rankTable = [
-        { score: 98, rank: 1 },
-        { score: 90, rank: 200 },
-        { score: 86, rank: 1500 }, // Calibrated for KCET 140, PUC 94 (~85.8889)
+        { score: 98, rank: 10 },
+        { score: 95, rank: 100 },
+        { score: 91, rank: 900 },   // Calibrated for KCET 150, PUC 99 (~880–990)
+        { score: 86, rank: 1500 },  // Calibrated for KCET 140, PUC 94 (~1500–1600)
         { score: 85, rank: 2000 },
-        { score: 80, rank: 4000 },
-        { score: 75, rank: 8000 },
-        { score: 70, rank: 15000 },
-        { score: 65, rank: 30000 },
-        { score: 62, rank: 45000 },
-        { score: 60, rank: 60000 },
-        { score: 58, rank: 75000 },
-        { score: 55, rank: 90000 },
-        { score: 50, rank: 120000 },
-        { score: 45, rank: 160000 },
-        { score: 40, rank: 190000 }
+        { score: 80, rank: 4500 },
+        { score: 75, rank: 9000 },
+        { score: 70, rank: 18000 },
+        { score: 65, rank: 35000 },
+        { score: 62, rank: 50000 },
+        { score: 60, rank: 65000 },
+        { score: 58, rank: 80000 },
+        { score: 55, rank: 95000 },
+        { score: 50, rank: 130000 },
+        { score: 45, rank: 170000 },
+        { score: 40, rank: 200000 }
     ];
 
     const trendData = {
-        2022: [1, 150, 1200, 1800, 3500, 7000, 13000, 25000, 40000, 55000, 70000, 85000, 110000, 140000, 170000],
-        2023: [1, 180, 1300, 1900, 3800, 7500, 14000, 28000, 43000, 58000, 72000, 88000, 115000, 150000, 180000],
-        2024: [1, 200, 1500, 2000, 4000, 8000, 15000, 30000, 45000, 60000, 75000, 90000, 120000, 160000, 190000]
+        2022: [8, 80, 720, 1200, 1600, 3600, 7200, 14400, 28000, 40000, 52000, 64000, 76000, 104000, 136000, 160000],
+        2023: [9, 90, 810, 1350, 1800, 4000, 8000, 16000, 31000, 44000, 57000, 70400, 83600, 114400, 149600, 176000],
+        2024: [10, 100, 900, 1500, 2000, 4500, 9000, 18000, 35000, 50000, 65000, 80000, 95000, 130000, 170000, 200000]
     };
 
     function safeLocalStorage(action, key, value) {
@@ -897,9 +898,9 @@
 
             let result = null;
             if (combinedScore >= rankTable[0].score) {
-                result = { low: 1, medium: 1, high: 1, composite: combinedScore };
+                result = { low: 10, medium: 10, high: 10, composite: combinedScore };
             } else if (combinedScore <= rankTable[rankTable.length - 1].score) {
-                result = { low: 171000, medium: 190000, high: 209000, composite: combinedScore };
+                result = { low: 180000, medium: 200000, high: 220000, composite: combinedScore };
             } else {
                 for (let i = 0; i < rankTable.length - 1; i++) {
                     const currentEntry = rankTable[i];
@@ -1133,6 +1134,7 @@
                         <p class="text-base">Predicted Rank: ${rankData.medium.toLocaleString()}</p>
                         <p class="text-base">Range: ${rankData.low.toLocaleString()}–${rankData.high.toLocaleString()}</p>
                         <p class="text-base">Category: ${category.toUpperCase()}</p>
+                        <p class="text-base mt-2">Likely Colleges: ${college.name} (${college.branch})</p>
                         <p class="text-base mt-2">${getRankAnalysis(rankData.medium)}</p>
                         <p class="text-base mt-2">Among ~3,12,000 candidates</p>
                     </div>
@@ -1156,7 +1158,7 @@
             document.getElementById('breakdown-content').innerHTML = `
                 <div class="text-center py-10">
                     <h3 class="text-xl font-medium text-red-600">Error Loading Breakdown</h3>
-                    <p class="text-base text-gray-600">Please try recalculating.</p>
+                    <p class="text-base text-gray-500">Please try recalculating.</p>
                 </div>
             `;
         }
@@ -1183,7 +1185,7 @@
             const ctx = document.getElementById('trend-chart');
             if (!ctx) throw new Error('Trend chart canvas not found');
             if (trendChartInstance) trendChartInstance.destroy();
-            const index = rankTable.findIndex(entry => entry.rank === rankTable.find(e => Math.abs(rankData.composite - e.score) <= 10)?.rank) || 0;
+            const index = rankTable.findIndex(entry => entry.rank === rankTable.find(e => Math.abs(rankData.composite - e.score) <= 5)?.rank) || 0;
             const ranks = [
                 { year: '2022', rank: trendData[2022][index] || rankTable[index].rank },
                 { year: '2023', rank: trendData[2023][index] || rankTable[index].rank },
@@ -1332,6 +1334,8 @@
             ctx.fillText(`PUC PCM: ${puc}%`, 50, 210);
             ctx.fillText(`Percentile: ${percentile}%`, 50, 240);
             ctx.fillText(`Category: ${category.toUpperCase()}`, 50, 270);
+            ctx.fillText(`Likely Colleges: ${college.name}`, 50, 300);
+
             ctx.font = 'italic 12px Poppins';
             ctx.fillStyle = '#666';
             ctx.textAlign = 'center';
@@ -1361,32 +1365,27 @@
             const pageHeight = doc.internal.pageSize.getHeight();
             const margin = 20;
 
-            // Background
-            doc.setFillColor(109, 40, 217); // #6d28d9
+            doc.setFillColor(109, 40, 217);
             doc.rect(0, 0, pageWidth, pageHeight, 'F');
 
-            // Card
             doc.setFillColor(255, 255, 255, 0.95);
             doc.roundedRect(margin, margin, pageWidth - 2 * margin, pageHeight - 2 * margin, 10, 10, 'F');
             doc.setLineWidth(0.5);
             doc.setDrawColor(109, 40, 217);
             doc.roundedRect(margin, margin, pageWidth - 2 * margin, pageHeight - 2 * margin, 10, 10, 'S');
 
-            // Title
-            doc.setFont('helvetica', 'bold'); // Fallback to helvetica if Poppins unavailable
+            doc.setFont('helvetica', 'bold');
             doc.setFontSize(24);
             doc.setTextColor(109, 40, 217);
             doc.text('KCET 2025 Elite Rank Card', pageWidth / 2, margin + 20, { align: 'center' });
 
-            // Rank
             doc.setFontSize(36);
-            doc.setTextColor(236, 72, 153); // #ec4899
+            doc.setTextColor(236, 72, 153);
             doc.text(`${rankData.medium.toLocaleString()}`, pageWidth / 2, margin + 50, { align: 'center' });
 
-            // Details
             doc.setFont('helvetica', 'normal');
             doc.setFontSize(12);
-            doc.setTextColor(30, 27, 75); // #1e1b4b
+            doc.setTextColor(30, 27, 75);
             const college = getCollegeSuggestions(rankData.medium, category);
             const percentile = calculatePercentile(rankData.medium);
             const details = [
@@ -1401,7 +1400,6 @@
                 doc.text(line, margin + 20, margin + 80 + i * 10);
             });
 
-            // Footer
             doc.setFontSize(10);
             doc.setFont('helvetica', 'italic');
             doc.setTextColor(100, 100, 100);
@@ -1443,8 +1441,8 @@
                         <div class="inline-block p-5 bg-white rounded-full mb-3 animate__animated animate__pulse">
                             <i class="fas fa-history text-3xl text-blue-600"></i>
                         </div>
-                        <h3 class="text-xl font-medium text-gray-700 mb-2">No Predictions Yet</h3>
-                        <p class="text-base text-gray-600">Calculate your rank to track progress!</p>
+                        <h3 class="text-xl font-medium text-gray-600 mb-2">No Predictions Yet</h3>
+                        <p class="text-base text-gray-500">Calculate your rank to track progress!</p>
                     </div>
                 `;
                 updateProgressChart([]);
@@ -1457,7 +1455,7 @@
                             <p class="text-base">Rank: ${res.rank.toLocaleString()} (Range: ${res.range})</p>
                             <p class="text-base">KCET: ${res.cet}/180 | PUC: ${res.puc}%</p>
                             <p class="text-base">Percentile: ${res.percentile}% | Category: ${res.category.toUpperCase()}</p>
-                            <p class="text-sm text-gray-600">${new Date(res.timestamp).toLocaleString()}</p>
+                            <p class="text-sm text-gray-500">${new Date(res.timestamp).toLocaleString()}</p>
                         </div>
                     `).join('')}
                 </div>
@@ -1469,7 +1467,7 @@
             progressContent.innerHTML = `
                 <div class="text-center py-10">
                     <h3 class="text-xl font-medium text-red-600">Error Loading Progress</h3>
-                    <p class="text-base text-gray-600">Please try again.</p>
+                    <p class="text-base text-gray-500">Please try again.</p>
                 </div>
             `;
         }
@@ -1565,11 +1563,9 @@
             initializeParticles();
             initializeTilt();
 
-            // Theme setup
             const savedTheme = safeLocalStorage('get', 'theme') || 'light';
             setTheme(savedTheme);
 
-            // Disclaimer timer
             let timeLeft = 10;
             const timerDisplay = document.getElementById('disclaimer-timer');
             const unlockBtn = document.getElementById('unlock-btn');
@@ -1584,7 +1580,6 @@
                 }
             }, 1000);
 
-            // Event listeners
             document.getElementById('unlock-btn').addEventListener('click', () => {
                 disclaimerAccepted = true;
                 document.getElementById('disclaimer-overlay').classList.add('animate__fadeOut');
@@ -1650,7 +1645,6 @@
                 generateRankCard(cet, puc, rankData, category);
             });
 
-            // Initialize default values
             updateMark('kcet', parseFloat(document.getElementById('kcet-total').value));
             updateMark('puc', parseFloat(document.getElementById('puc-percentage').value));
         } catch (err) {
@@ -1658,6 +1652,6 @@
             alert('An error occurred while loading the predictor. Please refresh the page.');
         }
     });
-</script>
+    </script>
 </body>
 </html>
